@@ -1,0 +1,6 @@
+fastapi
+mcp
+python-dotenv
+pydantic
+openai-agents
+asyncio
