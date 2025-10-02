@@ -3,6 +3,10 @@ from agents.mcp import MCPServerStdio
 from utils.completions import build_prompt_structure
 from utils.completions import FixedFirstChatHistory
 from utils.completions import update_chat_history
+from dotenv import load_dotenv
+
+
+load_dotenv()
 
 BASE_GENERATION_SYSTEM_PROMPT = """
 Your task is to Generate the best content possible for the user's request.
