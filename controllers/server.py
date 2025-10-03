@@ -4,7 +4,7 @@ import requests
 from mcp.server.fastmcp import FastMCP
 from dotenv import load_dotenv
 
-mcp = FastMCP("Trip Planner Server")
+mcp = FastMCP("Trip Planner Server",host="0.0.0.0",port="1820")
 
 load_dotenv()
 
@@ -74,4 +74,4 @@ def get_weather(destination: str) -> str:
 
 
 if __name__ == "__main__":
-    mcp.run(transport="stdio")
+    mcp.run(transport="sse")

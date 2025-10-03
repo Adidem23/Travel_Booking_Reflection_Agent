@@ -4,3 +4,8 @@ python-dotenv
 pydantic
 openai-agents
 asyncio
+langchain
+langchain_google_genai
+langgraph
+mcp-client
+langchain-mcp-adapters
