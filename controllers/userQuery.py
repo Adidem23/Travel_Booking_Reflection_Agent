@@ -3,7 +3,6 @@ from fastapi import APIRouter
 from views.userQuery import requetsedQuery
 from AgenticPattern.reflection_agent import ReflectionAgent
 
-
 load_dotenv()
 
 router = APIRouter(prefix="/userQuery",tags=["userQuery"])
