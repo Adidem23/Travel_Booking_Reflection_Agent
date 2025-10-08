@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-GOOGLE_GEMINI_API_KEY=os.getenv("GOOGLE_GEMINI_API_KEY",-EO)
+GOOGLE_GEMINI_API_KEY = os.getenv("GOOGLE_GEMINI_API_KEY", "AIzaSyB6mH4-5OcybeEBEsGhJ7YFzNM-EOqWgHI")
 
 BASE_GENERATION_SYSTEM_PROMPT = """
 Your task is to Generate the best content possible for the user's request.
@@ -21,28 +21,41 @@ and critiques. If the user content is ok and there's nothing to change, output t
 """
 
 class ReflectionAgent:
-    def __init__(self, name: str = "Travel Booking Agent",
+    def __init__(self, user_claims: dict, name: str = "Travel Booking Agent",
                  instructions: str = "You are a travel booking agent which creates a best plan according to the user requirements"):
+        """
+        :param user_claims: JWT claims dict (decoded token) from FastAPI route
+        """
         self.name = name
         self.instructions = instructions
+        self.user_claims = user_claims
+        self.jwt_token = user_claims.get("token") if "token" in user_claims else None
 
     async def _request_completion(self, history: list) -> str:
+        """
+        Makes a call to MCP Server with Authorization header
+        """
+        headers = {}
+        if self.jwt_token:
+            headers["Authorization"] = f"Bearer {self.jwt_token}"
+
         async with MCPServerSse(
-        name="Trip Planner Server",
-        params={
-            "url": "http://localhost:1820/sse",
-        },
-        cache_tools_list=True,
-    ) as server:
+            name="Trip Planner Server",
+            params={
+                "url": "http://localhost:1820/sse",
+                "headers": headers
+            },
+            cache_tools_list=True,
+        ) as server:
             agent = Agent(
                 name=self.name,
                 instructions=self.instructions,
                 model="gpt-4.1",
                 mcp_servers=[server]
             )
-            result = await Runner.run(agent,history)
-            print(result.final_output)
-    
+            result = await Runner.run(agent, history)
+            return result.final_output
+
     async def generate(self, generation_history: list) -> str:
         return await self._request_completion(generation_history)
 
@@ -85,5 +98,5 @@ class ReflectionAgent:
 
             update_chat_history(generation_history, critique, "user")
             update_chat_history(reflection_history, critique, "assistant")
-            
+
         return generation
