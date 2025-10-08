@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-GOOGLE_GEMINI_API_KEY = os.getenv("GOOGLE_GEMINI_API_KEY", "AIzaSyB6mH4-5OcybeEBEsGhJ7YFzNM-EOqWgHI")
+GOOGLE_GEMINI_API_KEY = os.getenv("GOOGLE_GEMINI_API_KEY", "")
 
 BASE_GENERATION_SYSTEM_PROMPT = """
 Your task is to Generate the best content possible for the user's request.
